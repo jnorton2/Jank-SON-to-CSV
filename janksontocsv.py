@@ -3,6 +3,7 @@ from copy import deepcopy
 from codecs import open as open
 import uuid
 import sys
+import csv
 
 print("\n\n----JSON to CSV (with key remover)----\n\n")
 print("Wherever you run this, it will output 2 files. One csv and one json of the "
@@ -58,19 +59,19 @@ with open(out_json_file_name, "w") as outfile:
     outfile.write(json.dumps(output_json))
 
 # Write the csv file
+print("Writing csv file")
+
 with open(out_csv_file_name, "w") as outfile:
-    print("Writing csv file")
-    for key in output_json[0].keys()[:-1]:
-        outfile.write(key + ",")
-    outfile.write(output_json[0].keys()[-1] + "\n")
-
+    writer = csv.writer(outfile)
+    writer.writerow(output_json[0].keys())
+    
     for obj in output_json:
-        for key in output_json[0].keys()[:-1]:
+        vals = []
+        for key in output_json[0].keys():
             try:
-                outfile.write(str(obj[key]) + ",")
+                vals.append(str(obj[key]))
             except Exception:
-                outfile.write(",")
-        outfile.write(str(obj[output_json[0].keys()[-1]]) + "\n")
-
+                vals.append("")
+        writer.writerow(vals)
 
 print("Done")
